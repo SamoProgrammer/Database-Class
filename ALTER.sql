@@ -1,0 +1,63 @@
+CREATE TABLE Users (
+    UserId INT PRIMARY KEY AUTO_INCREMENT,
+    FullName VARCHAR(100) NOT NULL,
+    Email VARCHAR(150) UNIQUE NOT NULL,
+    PasswordHash VARCHAR(255) NOT NULL,
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    IsActive BOOLEAN DEFAULT TRUE
+);
+
+ALTER TABLE Users
+ADD COLUMN PhoneNumber VARCHAR(20);
+
+ALTER TABLE Users
+ADD COLUMN City VARCHAR(50),
+ADD COLUMN Country VARCHAR(50),
+ADD COLUMN BirthDate DATE;
+
+ALTER TABLE Users
+MODIFY COLUMN Email VARCHAR(255) NOT NULL;
+
+ALTER TABLE Users
+CHANGE COLUMN FullName Name VARCHAR(150) NOT NULL;
+
+-- =========================================================
+ALTER TABLE Users
+ALTER COLUMN Country SET DEFAULT 'Unknown';
+
+ALTER TABLE Users
+ALTER COLUMN Country DROP DEFAULT;
+
+ALTER TABLE Users
+ADD CONSTRAINT UQ_Users_Phone UNIQUE (PhoneNumber);
+
+ALTER TABLE Users
+DROP INDEX UQ_Users_Phone;
+
+CREATE TABLE Roles (
+    RoleId INT PRIMARY KEY AUTO_INCREMENT,
+    RoleName VARCHAR(50)
+);
+
+ALTER TABLE Users
+ADD COLUMN RoleId INT,
+ADD CONSTRAINT FK_Users_Roles FOREIGN KEY (RoleId) REFERENCES Roles(RoleId);
+
+-- =========================================================
+ALTER TABLE Users
+DROP FOREIGN KEY FK_Users_Roles;
+
+ALTER TABLE Users
+ADD INDEX idx_users_email (Email);
+
+ALTER TABLE Users
+DROP INDEX idx_users_email;
+
+ALTER TABLE Users
+DROP COLUMN BirthDate;
+
+ALTER TABLE Users
+RENAME TO AppUsers;
+
+ALTER TABLE AppUsers AUTO_INCREMENT = 1000;
+
